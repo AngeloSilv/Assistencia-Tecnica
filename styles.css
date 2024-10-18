@@ -1,0 +1,84 @@
+/* Reset básico */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5; /* Cor de fundo suave */
+    color: #333; /* Cor do texto */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    padding: 20px;
+}
+
+h1 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #4A4A4A; /* Título em uma cor mais escura */
+}
+
+#chat {
+    width: 100%;
+    max-width: 600px; /* Largura máxima do chat */
+    height: 400px; /* Altura do chat */
+    background-color: #fff; /* Fundo branco para o chat */
+    border-radius: 8px; /* Bordas arredondadas */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+    overflow-y: auto; /* Rolagem vertical */
+    padding: 10px;
+}
+
+.input-container {
+    display: flex;
+    width: 100%;
+    max-width: 600px; /* Largura máxima do container de input */
+    margin-top: 10px;
+}
+
+input[type="text"] {
+    flex: 1; /* O input ocupa todo o espaço disponível */
+    padding: 10px;
+    border: 1px solid #ccc; /* Bordas do input */
+    border-radius: 4px; /* Bordas arredondadas */
+    margin-right: 10px; /* Espaço entre o input e o botão */
+}
+
+input[type="text"]:focus {
+    border-color: #007bff; /* Cor da borda ao focar */
+    outline: none; /* Remove o contorno padrão */
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #007bff; /* Cor de fundo do botão */
+    color: white; /* Cor do texto do botão */
+    border: none; /* Sem borda */
+    border-radius: 4px; /* Bordas arredondadas */
+    cursor: pointer; /* Cursor de mão ao passar o mouse */
+}
+
+button:hover {
+    background-color: #0056b3; /* Cor ao passar o mouse */
+}
+
+.usuario {
+    background-color: #e1ffc7; /* Cor de fundo das mensagens do usuário */
+    border-radius: 8px;
+    padding: 8px;
+    margin: 5px 0;
+    align-self: flex-end; /* Alinha à direita */
+}
+
+.bot {
+    background-color: #f1f1f1; /* Cor de fundo das mensagens do bot */
+    border-radius: 8px;
+    padding: 8px;
+    margin: 5px 0;
+    align-self: flex-start; /* Alinha à esquerda */
+}
