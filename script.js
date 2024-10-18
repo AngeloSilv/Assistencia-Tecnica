@@ -1,7 +1,7 @@
 function enviarPergunta() {
     const pergunta = document.getElementById('inputPergunta').value;
-    
-    fetch('http://localhost:5000/diagnosticar', {
+
+    fetch('http://localhost:5000/diagnostico', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ perguntas: [pergunta] })

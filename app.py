@@ -1,26 +1,30 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from pyswip import Prolog
 
-app = Flask(__name__)
+
+app = Flask(__name__, template_folder='templates')
+
 prolog = Prolog()
-prolog.consult('diagnostico.pl')  # Carrega o arquivo Prolog
+prolog.consult('diagnostico.pl')
+
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 @app.route('/diagnosticar', methods=['POST'])
 def diagnosticar():
-    dados = request.get_json()  # Obtém os dados do frontend
+    dados = request.get_json()
     perguntas = dados.get('perguntas', [])
     problema = 'Desconhecido'
-    
-    # Para cada pergunta, adiciona ao Prolog como fato
+
     for pergunta in perguntas:
         prolog.assertz(f"sim('{pergunta}')")
-    
-    # Consulta o Prolog para obter o problema diagnosticado
+
     solucoes = list(prolog.query('diagnosticar(Problema)'))
     if solucoes:
         problema = solucoes[0]['Problema']
-    
-    return jsonify({'problema': problema})  # Retorna o diagnóstico
+
+    return jsonify({'problema': problema})
 
 if __name__ == '__main__':
     app.run(debug=True)
