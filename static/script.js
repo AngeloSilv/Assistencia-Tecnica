@@ -1,6 +1,3 @@
-document.addEventListener('DOMContentLoaded', function() {
-    enviarMensagem('Iniciar diagnóstico');
-});
 
 function adicionarMensagem(remetente, mensagem) {
     const chat = document.getElementById('chat');
@@ -41,7 +38,7 @@ function enviarMensagem(mensagem = null) {
 
 function processarResposta(data) {
     if (data.type === 'question') {
-        adicionarMensagem('bot', data.message + '? (sim/nao)');
+        adicionarMensagem('bot', data.message + '? (sim / nao)');
     } else if (data.type === 'diagnosis') {
         adicionarMensagem('bot', data.message);
     } else if (data.type === 'error') {
