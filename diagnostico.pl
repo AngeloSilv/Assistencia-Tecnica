@@ -1,4 +1,3 @@
-% Definição de fatos dinâmicos para armazenar respostas do usuário
 :- dynamic(sim/1).
 :- dynamic(nao/1).
 

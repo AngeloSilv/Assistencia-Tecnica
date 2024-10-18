@@ -1,15 +1,21 @@
+document.addEventListener('DOMContentLoaded', function() {
+    enviarMensagem('Iniciar diagnóstico');
+});
+
 function adicionarMensagem(remetente, mensagem) {
     const chat = document.getElementById('chat');
     const novaMensagem = document.createElement('div');
     novaMensagem.classList.add(remetente);
     novaMensagem.innerText = mensagem;
     chat.appendChild(novaMensagem);
-    chat.scrollTop = chat.scrollHeight; // Rolagem automática
+    chat.scrollTop = chat.scrollHeight;
 }
 
-function enviarMensagem() {
+function enviarMensagem(mensagem = null) {
     const input = document.getElementById('inputMensagem');
-    const mensagem = input.value;
+    if (!mensagem) {
+        mensagem = input.value;
+    }
     if (mensagem.trim() === '') return;
 
     adicionarMensagem('usuario', mensagem);
