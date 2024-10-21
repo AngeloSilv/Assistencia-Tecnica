@@ -78,6 +78,10 @@ def diagnosticar():
             session.clear()
             print("Nenhuma hipótese correspondeu.")
             return jsonify({'type': 'diagnosis', 'message': 'Desculpe, não foi possível identificar o problema.'})
+  
+// Pedir para o usuário procurar uma assistência técnica        
+            return jsonify({'type':
+'diagnosis', 'message': 'Procure uma assistência técnica.'})
     except Exception as e:
         print("Erro na rota /diagnosticar:", e)
         traceback.print_exc()
