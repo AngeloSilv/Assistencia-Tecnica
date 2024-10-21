@@ -37,7 +37,7 @@ def diagnosticar():
             print(f"Resposta à pergunta '{pergunta}': {resposta}")
             if resposta in ['sim', 's', 'S', 'SIM', 'Sim', 'yes', 'y', 'Yes', 'YES']:
                 session['respostas'][pergunta] = 'sim'
-            elif resposta in ['não', 'nao', 'n', 'no']:
+            elif resposta in ['não','Não', 'NAO', 'nao', 'n', 'N', 'no']:
                 session['respostas'][pergunta] = 'nao'
             else:
                 # Resposta inválida, pedir novamente
