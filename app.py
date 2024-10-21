@@ -35,7 +35,7 @@ def diagnosticar():
             pergunta = session['pergunta_atual']
             resposta = user_message.strip().lower()
             print(f"Resposta à pergunta '{pergunta}': {resposta}")
-            if resposta in ['sim', 's', 'yes', 'y']:
+            if resposta in ['sim', 's', 'S', 'SIM', 'Sim', 'yes', 'y', 'Yes', 'YES']:
                 session['respostas'][pergunta] = 'sim'
             elif resposta in ['não', 'nao', 'n', 'no']:
                 session['respostas'][pergunta] = 'nao'
