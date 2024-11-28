@@ -88,5 +88,11 @@ def diagnosticar():
         session.clear()
         return jsonify({'type': 'error', 'message': 'Ocorreu um erro no servidor.'}), 500
 
+@app.route('/encerrar', methods=['POST'])
+def encerrar():
+    session.clear()
+    print("Conversa encerrada e sessão limpa.")
+    return jsonify({'message': 'Sessão encerrada.'})
+
 if __name__ == '__main__':
     app.run(debug=True)

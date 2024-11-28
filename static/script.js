@@ -1,3 +1,38 @@
+// Esconde o botão "Encerrar conversa" inicialmente
+document.getElementById('botaoEncerrar').style.display = 'none';
+
+// Função para exibir o chat ao clicar no botão "Iniciar conversa"
+document.getElementById('iniciarConversa').addEventListener('click', function () {
+    document.getElementById('iniciarConversa').style.display = 'none'; // Esconde o botão
+    document.getElementById('chatContainer').style.display = 'flex'; // Exibe o chat
+    document.getElementById('botaoEncerrar').style.display = 'block'; // Mostra o botão "Encerrar conversa"
+
+    // Iniciar o diagnóstico sem enviar mensagem do usuário
+    iniciarDiagnostico();
+});
+
+// Evento para encerrar a conversa
+document.getElementById('botaoEncerrar').addEventListener('click', function () {
+    document.getElementById('chatContainer').style.display = 'none'; // Esconde o chat
+    document.getElementById('iniciarConversa').style.display = 'block'; // Mostra o botão "Iniciar conversa"
+    document.getElementById('inputMensagem').value = ''; // Limpa o campo de mensagem
+    document.getElementById('chat').innerHTML = ''; // Limpa o conteúdo do chat
+    document.getElementById('botaoEncerrar').style.display = 'none'; // Esconde o botão "Encerrar conversa"
+
+    // Enviar requisição para encerrar a sessão no servidor
+    fetch('/encerrar', {
+        method: 'POST',
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data.message);
+    })
+    .catch(error => {
+        console.error('Erro ao encerrar a sessão:', error);
+    });
+});
+
+// Função para adicionar mensagens ao chat
 function adicionarMensagem(remetente, mensagem) {
     const chat = document.getElementById('chat');
     const novaMensagem = document.createElement('div');
@@ -7,6 +42,7 @@ function adicionarMensagem(remetente, mensagem) {
     chat.scrollTop = chat.scrollHeight;
 }
 
+// Função para enviar mensagens
 function enviarMensagem(mensagem = null) {
     const input = document.getElementById('inputMensagem');
     if (!mensagem) {
@@ -24,17 +60,18 @@ function enviarMensagem(mensagem = null) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: mensagem })
     })
-    .then(response => response.json())
-    .then(data => {
-        console.log('Resposta do servidor:', data); // Log de depuração
-        processarResposta(data);
-    })
-    .catch(error => {
-        console.error('Erro:', error);
-        adicionarMensagem('bot', 'Ocorreu um erro ao se comunicar com o servidor.');
-    });
+        .then(response => response.json())
+        .then(data => {
+            console.log('Resposta do servidor:', data); // Log de depuração
+            processarResposta(data);
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+            adicionarMensagem('bot', 'Ocorreu um erro ao se comunicar com o servidor.');
+        });
 }
 
+// Função para processar a resposta do servidor
 function processarResposta(data) {
     if (data.type === 'question') {
         adicionarMensagem('bot', data.message + '? (sim / nao)');
@@ -45,9 +82,8 @@ function processarResposta(data) {
     }
 }
 
-// Iniciar o diagnóstico ao carregar a página
-window.addEventListener('DOMContentLoaded', function() {
-    // Iniciar o diagnóstico sem enviar mensagem do usuário
+// Função para iniciar o diagnóstico
+function iniciarDiagnostico() {
     fetch('/diagnosticar', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -62,14 +98,14 @@ window.addEventListener('DOMContentLoaded', function() {
         console.error('Erro:', error);
         adicionarMensagem('bot', 'Ocorreu um erro ao iniciar o diagnóstico.');
     });
-});
+}
 
-document.getElementById('inputMensagem').addEventListener('keypress', function(e) {
+// Evento de envio com Enter
+document.getElementById('inputMensagem').addEventListener('keypress', function (e) {
     if (e.key === 'Enter') {
         enviarMensagem();
     }
 });
 
-document.getElementById('botaoEnviar').addEventListener('click', function() {
-    enviarMensagem();
-});
+// Evento de envio com clique no botão
+document.getElementById('botaoEnviar').addEventListener('click', enviarMensagem);
