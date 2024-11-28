@@ -1,4 +1,3 @@
-
 function adicionarMensagem(remetente, mensagem) {
     const chat = document.getElementById('chat');
     const novaMensagem = document.createElement('div');
@@ -48,10 +47,11 @@ function processarResposta(data) {
 
 // Iniciar o diagnóstico ao carregar a página
 window.addEventListener('DOMContentLoaded', function() {
+    // Iniciar o diagnóstico sem enviar mensagem do usuário
     fetch('/diagnosticar', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: '' }) // Mensagem vazia para iniciar
+        body: JSON.stringify({ message: '' })
     })
     .then(response => response.json())
     .then(data => {
@@ -70,4 +70,6 @@ document.getElementById('inputMensagem').addEventListener('keypress', function(e
     }
 });
 
-document.getElementById('botaoEnviar').addEventListener('click', enviarMensagem);
+document.getElementById('botaoEnviar').addEventListener('click', function() {
+    enviarMensagem();
+});
