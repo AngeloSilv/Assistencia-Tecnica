@@ -35,9 +35,9 @@ def diagnosticar():
             pergunta = session['pergunta_atual']
             resposta = user_message.strip().lower()
             print(f"Resposta à pergunta '{pergunta}': {resposta}")
-            if resposta in ['sim', 's', 'yes', 'y']:
+            if resposta in ['sim', 's', 'S', 'SIM', 'Sim', 'yes', 'y', 'Yes', 'YES']:
                 session['respostas'][pergunta] = 'sim'
-            elif resposta in ['não', 'nao', 'n', 'no']:
+            elif resposta in ['não','Não', 'NAO', 'nao', 'n', 'N', 'no']:
                 session['respostas'][pergunta] = 'nao'
             else:
                 # Resposta inválida, pedir novamente
@@ -78,6 +78,10 @@ def diagnosticar():
             session.clear()
             print("Nenhuma hipótese correspondeu.")
             return jsonify({'type': 'diagnosis', 'message': 'Desculpe, não foi possível identificar o problema.'})
+  
+// Pedir para o usuário procurar uma assistência técnica        
+            return jsonify({'type':
+'diagnosis', 'message': 'Procure uma assistência técnica.'})
     except Exception as e:
         print("Erro na rota /diagnosticar:", e)
         traceback.print_exc()
