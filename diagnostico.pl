@@ -46,7 +46,7 @@ hipoteses_validas([(_, sim)|T]) :-
 hipoteses_validas([(_, nao)|_]) :-
     fail.
 
-% Definição das hipóteses e suas perguntas associadas
+% Definição das hipóteses
 
 % Hipótese para desktop: Computador não está conectado à energia
 verificar_condicoes('Computador não está conectado à energia', [
@@ -248,9 +248,6 @@ inferir_resposta(Pergunta, Resposta) :-
     nao('O computador não liga?'),
     Resposta = nao.
 
-% ... (Outras inferências permanecem iguais)
-
-% Caso contrário, não é possível inferir
 inferir_resposta(_, desconhecido).
 
 % Limpa as respostas armazenadas para uma nova sessão
