@@ -3,6 +3,7 @@ from flask_cors import CORS
 from pyswip import Prolog
 import secrets
 import traceback
+import unicodedata
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
 app.secret_key = secrets.token_hex(16)
@@ -12,15 +13,19 @@ CORS(app)
 prolog = Prolog()
 prolog.consult('diagnostico.pl')
 
+def normalize_str(s):
+    # Função para normalizar a string removendo diferenças de codificação
+    return unicodedata.normalize('NFC', s)
+
 @app.route('/')
 def index():
     return render_template('index.html')
 
 @app.route('/diagnosticar', methods=['POST'])
-def diagnosticar():
+def diagnosticar_route():
     try:
         data = request.get_json()
-        user_message = data.get('message', '')
+        user_message = data.get('message', '').strip()
         print("Mensagem do usuário:", user_message)
 
         # Inicializar a lista de respostas na sessão
@@ -30,10 +35,10 @@ def diagnosticar():
 
         print("Sessão antes do processamento:", dict(session))
 
-        if 'pergunta_atual' in session and user_message.strip() != '':
+        if 'pergunta_atual' in session and user_message != '':
             # O usuário está respondendo a uma pergunta
             pergunta = session['pergunta_atual']
-            resposta = user_message.strip().lower()
+            resposta = user_message.lower()
             print(f"Resposta à pergunta '{pergunta}': {resposta}")
             if resposta in ['sim', 's', 'yes', 'y']:
                 session['respostas'][pergunta] = 'sim'
@@ -54,8 +59,12 @@ def diagnosticar():
 
         # Assertar as respostas atuais no Prolog
         for pergunta, resposta in session['respostas'].items():
-            prolog.assertz(f"{resposta}('{pergunta}')")
-            print(f"Assert no Prolog: {resposta}('{pergunta}')")
+            pergunta_norm = normalize_str(pergunta)
+            # Escapar caracteres especiais na pergunta
+            pergunta_escapada = pergunta_norm.replace("'", "\\'")
+            # Asserta as respostas no Prolog, garantindo que strings sejam corretamente formatadas
+            prolog.assertz(f"{resposta}('{pergunta_escapada}')")
+            print(f"Assert no Prolog: {resposta}('{pergunta_escapada}')")
 
         # Tentar diagnosticar
         consulta = list(prolog.query('diagnosticar(Problema, PerguntasFaltantes)'))
@@ -65,12 +74,20 @@ def diagnosticar():
             resultado = consulta[0]
             PerguntasFaltantes = resultado['PerguntasFaltantes']
             if PerguntasFaltantes:
-                # Há perguntas pendentes
-                proxima_pergunta = PerguntasFaltantes[0]
-                session['pergunta_atual'] = proxima_pergunta
-                session.modified = True
-                print("Próxima pergunta:", proxima_pergunta)
-                return jsonify({'type': 'question', 'message': proxima_pergunta})
+                # Converter PerguntasFaltantes para lista de strings, se necessário
+                if not isinstance(PerguntasFaltantes, list):
+                    PerguntasFaltantes = [PerguntasFaltantes.value]
+
+                # Verificar se a próxima pergunta já foi respondida (possibilidade devido à inferência)
+                for pergunta in PerguntasFaltantes:
+                    pergunta_str = str(pergunta)
+                    if pergunta_str not in session['respostas']:
+                        session['pergunta_atual'] = pergunta_str
+                        session.modified = True
+                        print("Próxima pergunta:", pergunta_str)
+                        return jsonify({'type': 'question', 'message': pergunta_str})
+                # Se todas as perguntas pendentes já foram respondidas, tentar diagnosticar novamente
+                return diagnosticar_route()
             else:
                 # Diagnóstico concluído
                 problema = resultado['Problema']

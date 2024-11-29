@@ -1,3 +1,5 @@
+// script.js
+
 // Esconde o botão "Encerrar conversa" inicialmente
 document.getElementById('botaoEncerrar').style.display = 'none';
 
@@ -53,28 +55,28 @@ function enviarMensagem(mensagem = null) {
     adicionarMensagem('usuario', mensagem);
     input.value = '';
 
-    console.log('Enviando mensagem para o servidor:', mensagem); // Log de depuração
+    console.log('Enviando mensagem para o servidor:', mensagem);
 
     fetch('/diagnosticar', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         body: JSON.stringify({ message: mensagem })
     })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Resposta do servidor:', data); // Log de depuração
-            processarResposta(data);
-        })
-        .catch(error => {
-            console.error('Erro:', error);
-            adicionarMensagem('bot', 'Ocorreu um erro ao se comunicar com o servidor.');
-        });
+    .then(response => response.json())
+    .then(data => {
+        console.log('Resposta do servidor:', data);
+        processarResposta(data);
+    })
+    .catch(error => {
+        console.error('Erro:', error);
+        adicionarMensagem('bot', 'Ocorreu um erro ao se comunicar com o servidor.');
+    });
 }
 
 // Função para processar a resposta do servidor
 function processarResposta(data) {
     if (data.type === 'question') {
-        adicionarMensagem('bot', data.message + '? (sim / nao)');
+        adicionarMensagem('bot', data.message + ' (sim / não)');
     } else if (data.type === 'diagnosis') {
         adicionarMensagem('bot', data.message);
     } else if (data.type === 'error') {
@@ -86,12 +88,12 @@ function processarResposta(data) {
 function iniciarDiagnostico() {
     fetch('/diagnosticar', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         body: JSON.stringify({ message: '' })
     })
     .then(response => response.json())
     .then(data => {
-        console.log('Resposta inicial do servidor:', data); // Log de depuração
+        console.log('Resposta inicial do servidor:', data);
         processarResposta(data);
     })
     .catch(error => {
