@@ -1,13 +1,13 @@
-// script.js
-
-// Esconde o botão "Encerrar conversa" inicialmente
+// Esconde elementos inicialmente
 document.getElementById('botaoEncerrar').style.display = 'none';
+document.querySelector('.search-bar').style.display = 'none';
 
 // Função para exibir o chat ao clicar no botão "Iniciar conversa"
 document.getElementById('iniciarConversa').addEventListener('click', function () {
     document.getElementById('iniciarConversa').style.display = 'none'; // Esconde o botão
     document.getElementById('chatContainer').style.display = 'flex'; // Exibe o chat
     document.getElementById('botaoEncerrar').style.display = 'block'; // Mostra o botão "Encerrar conversa"
+    document.querySelector('.search-bar').style.display = 'block'; // Mostra a barra de pesquisa
 
     // Iniciar o diagnóstico sem enviar mensagem do usuário
     iniciarDiagnostico();
@@ -20,6 +20,8 @@ document.getElementById('botaoEncerrar').addEventListener('click', function () {
     document.getElementById('inputMensagem').value = ''; // Limpa o campo de mensagem
     document.getElementById('chat').innerHTML = ''; // Limpa o conteúdo do chat
     document.getElementById('botaoEncerrar').style.display = 'none'; // Esconde o botão "Encerrar conversa"
+    document.querySelector('.search-bar').style.display = 'none'; // Esconde a barra de pesquisa
+    document.getElementById('inputPesquisa').value = ''; // Limpa o campo de pesquisa
 
     // Enviar requisição para encerrar a sessão no servidor
     fetch('/encerrar', {
@@ -102,12 +104,32 @@ function iniciarDiagnostico() {
     });
 }
 
-// Evento de envio com Enter
+// Evento de envio com Enter no campo de mensagem
 document.getElementById('inputMensagem').addEventListener('keypress', function (e) {
     if (e.key === 'Enter') {
         enviarMensagem();
     }
 });
 
-// Evento de envio com clique no botão
-document.getElementById('botaoEnviar').addEventListener('click', enviarMensagem);
+// Evento de envio com clique no botão "Enviar"
+document.getElementById('botaoEnviar').addEventListener('click', function () {
+    enviarMensagem();
+});
+
+// Função para pesquisar mensagens do bot
+function pesquisarMensagens() {
+    const termo = document.getElementById('inputPesquisa').value.toLowerCase();
+    const mensagensBot = document.querySelectorAll('#chat .bot');
+
+    mensagensBot.forEach(msg => {
+        msg.classList.remove('highlight');
+        if (msg.innerText.toLowerCase().includes(termo) && termo !== '') {
+            msg.classList.add('highlight');
+        }
+    });
+}
+
+// Evento de pesquisa no campo de pesquisa
+document.getElementById('inputPesquisa').addEventListener('input', function () {
+    pesquisarMensagens();
+});

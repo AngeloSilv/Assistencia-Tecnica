@@ -14,19 +14,18 @@
             height: 100vh;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
         }
 
         h1 {
             text-align: center;
-            margin: 0 0 20px;
+            margin: 20px 0;
             color: #fff;
             font-size: 28px;
             font-weight: bold;
         }
 
-        /* Botões "Iniciar conversa" e "Encerrar conversa" */
+        /* Botões */
         .botao {
             padding: 10px 20px;
             font-size: 18px;
@@ -46,6 +45,38 @@
         .botao:active {
             transform: scale(0.95);
         }
+
+        /* Container principal */
+        #mainContainer {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Barra de pesquisa */
+        .search-bar {
+        width: 100%; /* Largura total */
+        max-width: 770px; /* Máximo igual ao chat */
+        display: flex;
+        margin-right: -45px;
+        justify-content: center; /* Centraliza horizontalmente */
+        align-items: center; /* Garante alinhamento vertical */
+        margin-bottom: 20px;
+}
+
+        .search-bar input {
+        width: 90%; /* Ajusta a largura do input */
+        max-width: 800px; /* Não excede o contêiner */
+        padding: 10px 15px;
+        font-size: 16px;
+        border: none;
+        border-radius: 8px;
+        background-color: #2c2c2c;
+        color: #fff;
+        outline: none;
+}
 
         /* Container do chat */
         #chatContainer {
@@ -125,6 +156,7 @@
             text-align: right;
             margin-bottom: 10px;
             padding-right: 10px;
+            word-wrap: break-word;
         }
 
         .bot {
@@ -132,23 +164,36 @@
             text-align: left;
             margin-bottom: 10px;
             padding-left: 10px;
+            word-wrap: break-word;
+        }
+
+        /* Destaque para mensagens encontradas */
+        .highlight {
+            background-color: #444;
         }
     </style>
 </head>
 <body>
     <h1>Diagnóstico de Assistência Técnica</h1>
 
-    <button id="iniciarConversa" class="botao">Iniciar conversa</button>
+    <div id="mainContainer">
+        <button id="iniciarConversa" class="botao">Iniciar conversa</button>
 
-    <div id="chatContainer">
-        <div id="chat"></div>
-        <div class="input-container">
-            <input type="text" id="inputMensagem" placeholder="Envie sua mensagem para o técnico">
-            <button id="botaoEnviar">Enviar</button>
+        <!-- Barra de pesquisa -->
+        <div class="search-bar">
+            <input type="text" id="inputPesquisa" placeholder="Pesquisar mensagens do técnico...">
         </div>
-        <button id="botaoEncerrar" class="botao">Encerrar conversa</button>
-    </div>
 
+        <div id="chatContainer">
+            <div id="chat"></div>
+            <div class="input-container">
+                <input type="text" id="inputMensagem" placeholder="Envie sua mensagem para o técnico">
+                <button id="botaoEnviar">Enviar</button>
+            </div>
+            <button id="botaoEncerrar" class="botao">Encerrar conversa</button>
+        </div>
+    </div>
+    
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>

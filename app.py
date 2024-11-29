@@ -75,19 +75,27 @@ def diagnosticar_route():
             PerguntasFaltantes = resultado['PerguntasFaltantes']
             if PerguntasFaltantes:
                 # Converter PerguntasFaltantes para lista de strings, se necessário
-                if not isinstance(PerguntasFaltantes, list):
-                    PerguntasFaltantes = [PerguntasFaltantes.value]
+                if isinstance(PerguntasFaltantes, list):
+                    perguntas_lista = PerguntasFaltantes
+                else:
+                    perguntas_lista = [PerguntasFaltantes]
 
-                # Verificar se a próxima pergunta já foi respondida (possibilidade devido à inferência)
-                for pergunta in PerguntasFaltantes:
+                # Iterar sobre as perguntas faltantes e buscar a próxima não respondida
+                proxima_pergunta = None
+                for pergunta in perguntas_lista:
                     pergunta_str = str(pergunta)
                     if pergunta_str not in session['respostas']:
-                        session['pergunta_atual'] = pergunta_str
-                        session.modified = True
-                        print("Próxima pergunta:", pergunta_str)
-                        return jsonify({'type': 'question', 'message': pergunta_str})
-                # Se todas as perguntas pendentes já foram respondidas, tentar diagnosticar novamente
-                return diagnosticar_route()
+                        proxima_pergunta = pergunta_str
+                        break
+
+                if proxima_pergunta:
+                    session['pergunta_atual'] = proxima_pergunta
+                    session.modified = True
+                    print("Próxima pergunta:", proxima_pergunta)
+                    return jsonify({'type': 'question', 'message': proxima_pergunta})
+                else:
+                    # Se todas as perguntas faltantes já foram respondidas, tentar diagnosticar novamente
+                    return diagnosticar_route()
             else:
                 # Diagnóstico concluído
                 problema = resultado['Problema']
@@ -113,3 +121,4 @@ def encerrar():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
