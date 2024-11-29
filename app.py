@@ -14,7 +14,6 @@ prolog = Prolog()
 prolog.consult('diagnostico.pl')
 
 def normalize_str(s):
-    # Função para normalizar a string removendo diferenças de codificação
     return unicodedata.normalize('NFC', s)
 
 @app.route('/')
@@ -28,7 +27,6 @@ def diagnosticar_route():
         user_message = data.get('message', '').strip()
         print("Mensagem do usuário:", user_message)
 
-        # Inicializar a lista de respostas na sessão
         if 'respostas' not in session:
             session['respostas'] = {}
             print("Iniciando nova sessão.")
@@ -36,7 +34,6 @@ def diagnosticar_route():
         print("Sessão antes do processamento:", dict(session))
 
         if 'pergunta_atual' in session and user_message != '':
-            # O usuário está respondendo a uma pergunta
             pergunta = session['pergunta_atual']
             resposta = user_message.lower()
             print(f"Resposta à pergunta '{pergunta}': {resposta}")
@@ -52,17 +49,13 @@ def diagnosticar_route():
         else:
             print("Iniciando o diagnóstico ou aguardando resposta.")
 
-        # Limpar fatos anteriores no Prolog
-        prolog.retractall('sim(_)')  # Remover todos os fatos 'sim'
-        prolog.retractall('nao(_)')  # Remover todos os fatos 'nao'
-        prolog.retractall('tipo_aparelho(_)')  # Remover o fato 'tipo_aparelho' se existir
+        prolog.retractall('sim(_)')  
+        prolog.retractall('nao(_)')  
+        prolog.retractall('tipo_aparelho(_)') 
 
-        # Assertar as respostas atuais no Prolog
         for pergunta, resposta in session['respostas'].items():
             pergunta_norm = normalize_str(pergunta)
-            # Escapar caracteres especiais na pergunta
             pergunta_escapada = pergunta_norm.replace("'", "\\'")
-            # Asserta as respostas no Prolog, garantindo que strings sejam corretamente formatadas
             prolog.assertz(f"{resposta}('{pergunta_escapada}')")
             print(f"Assert no Prolog: {resposta}('{pergunta_escapada}')")
 
@@ -74,13 +67,11 @@ def diagnosticar_route():
             resultado = consulta[0]
             PerguntasFaltantes = resultado['PerguntasFaltantes']
             if PerguntasFaltantes:
-                # Converter PerguntasFaltantes para lista de strings, se necessário
                 if isinstance(PerguntasFaltantes, list):
                     perguntas_lista = PerguntasFaltantes
                 else:
                     perguntas_lista = [PerguntasFaltantes]
 
-                # Iterar sobre as perguntas faltantes e buscar a próxima não respondida
                 proxima_pergunta = None
                 for pergunta in perguntas_lista:
                     pergunta_str = str(pergunta)
@@ -94,7 +85,6 @@ def diagnosticar_route():
                     print("Próxima pergunta:", proxima_pergunta)
                     return jsonify({'type': 'question', 'message': proxima_pergunta})
                 else:
-                    # Se todas as perguntas faltantes já foram respondidas, tentar diagnosticar novamente
                     return diagnosticar_route()
             else:
                 # Diagnóstico concluído
@@ -103,7 +93,6 @@ def diagnosticar_route():
                 session.clear()
                 return jsonify({'type': 'diagnosis', 'message': f'Possível problema identificado: {problema}'})
         else:
-            # Nenhuma hipótese correspondeu; diagnóstico não encontrado
             print("Nenhuma hipótese correspondeu.")
             session.clear()
             return jsonify({'type': 'diagnosis', 'message': 'Desculpe, não foi possível identificar o problema.'})

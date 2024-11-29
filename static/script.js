@@ -1,29 +1,28 @@
-// Esconde elementos inicialmente
+// Esconde elementos
 document.getElementById('botaoEncerrar').style.display = 'none';
 document.querySelector('.search-bar').style.display = 'none';
 
-// Função para exibir o chat ao clicar no botão "Iniciar conversa"
+//Iniciar conversa
 document.getElementById('iniciarConversa').addEventListener('click', function () {
-    document.getElementById('iniciarConversa').style.display = 'none'; // Esconde o botão
-    document.getElementById('chatContainer').style.display = 'flex'; // Exibe o chat
-    document.getElementById('botaoEncerrar').style.display = 'block'; // Mostra o botão "Encerrar conversa"
-    document.querySelector('.search-bar').style.display = 'block'; // Mostra a barra de pesquisa
+    document.getElementById('iniciarConversa').style.display = 'none'; 
+    document.getElementById('chatContainer').style.display = 'flex'; 
+    document.getElementById('botaoEncerrar').style.display = 'block'; 
+    document.querySelector('.search-bar').style.display = 'block'; 
 
-    // Iniciar o diagnóstico sem enviar mensagem do usuário
     iniciarDiagnostico();
 });
 
 // Evento para encerrar a conversa
 document.getElementById('botaoEncerrar').addEventListener('click', function () {
-    document.getElementById('chatContainer').style.display = 'none'; // Esconde o chat
-    document.getElementById('iniciarConversa').style.display = 'block'; // Mostra o botão "Iniciar conversa"
-    document.getElementById('inputMensagem').value = ''; // Limpa o campo de mensagem
-    document.getElementById('chat').innerHTML = ''; // Limpa o conteúdo do chat
-    document.getElementById('botaoEncerrar').style.display = 'none'; // Esconde o botão "Encerrar conversa"
-    document.querySelector('.search-bar').style.display = 'none'; // Esconde a barra de pesquisa
-    document.getElementById('inputPesquisa').value = ''; // Limpa o campo de pesquisa
+    document.getElementById('chatContainer').style.display = 'none'; 
+    document.getElementById('iniciarConversa').style.display = 'block'; 
+    document.getElementById('inputMensagem').value = ''; 
+    document.getElementById('chat').innerHTML = ''; 
+    document.getElementById('botaoEncerrar').style.display = 'none'; 
+    document.querySelector('.search-bar').style.display = 'none'; 
+    document.getElementById('inputPesquisa').value = ''; 
 
-    // Enviar requisição para encerrar a sessão no servidor
+    // Encerrar a sessão no servidor
     fetch('/encerrar', {
         method: 'POST',
     })
@@ -36,7 +35,7 @@ document.getElementById('botaoEncerrar').addEventListener('click', function () {
     });
 });
 
-// Função para adicionar mensagens ao chat
+// Função para adicionar mensagens
 function adicionarMensagem(remetente, mensagem) {
     const chat = document.getElementById('chat');
     const novaMensagem = document.createElement('div');
@@ -104,19 +103,19 @@ function iniciarDiagnostico() {
     });
 }
 
-// Evento de envio com Enter no campo de mensagem
+// Evento de envio com Enter
 document.getElementById('inputMensagem').addEventListener('keypress', function (e) {
     if (e.key === 'Enter') {
         enviarMensagem();
     }
 });
 
-// Evento de envio com clique no botão "Enviar"
+// Evento de envio "Enviar"
 document.getElementById('botaoEnviar').addEventListener('click', function () {
     enviarMensagem();
 });
 
-// Função para pesquisar mensagens do bot
+// Função para pesquisar
 function pesquisarMensagens() {
     const termo = document.getElementById('inputPesquisa').value.toLowerCase();
     const mensagensBot = document.querySelectorAll('#chat .bot');
